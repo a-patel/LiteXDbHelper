@@ -1,7 +1,6 @@
 # LiteXDbHelper
-> LiteXDbHelper is simple yet powerful and very high-performance DB Helper Class for different database providers like SqlServer, MySql, PostgreSql, MariaDB, Oracle in C#
+> LiteXDbHelper is simple yet powerful and very high-performance DBHelper Class for different database providers like SqlServer, MySql, PostgreSql, MariaDB, Oracle in C#
 
-## Coming soon...
 
 ## Database Providers :books:
 - [SqlServer](docs/SqlServer.md)
@@ -12,17 +11,26 @@
 
 
 ## Features :pager:
-- 
+- ExecuteNonQuery
+- ExecuteScalar
+- GetDataTable
+- GetDataSet
+- ExecuteReder
+- CreateParameters (for each providers)
 
 ## Basic Usage :page_facing_up:
 
 ### Step 1 : Install the package :package:
 
 > Choose one kinds of sms provider type that you needs and install it via [Nuget](https://www.nuget.org/profiles/iamaashishpatel).
-> To install LiteXSms, run the following command in the [Package Manager Console](http://docs.nuget.org/docs/start-here/using-the-package-manager-console)
+> To install LiteXDbHelper, run the following command in the [Package Manager Console](http://docs.nuget.org/docs/start-here/using-the-package-manager-console)
 
 ```Powershell
-PM> Install-Package LiteX.DBStorage
+PM> Install-Package LiteX.DbHelper.SqlServer
+PM> Install-Package LiteX.DbHelper.MySql
+PM> Install-Package LiteX.DbHelper.PostgreSql
+PM> Install-Package LiteX.DbHelper.MariaDB
+PM> Install-Package LiteX.DbHelper.Oracle
 ```
 
 
@@ -32,18 +40,196 @@ PM> Install-Package LiteX.DBStorage
 
 ##### 2.1 : AppSettings 
 ```js
-
+{
+  "ConnectionStrings": {
+    "LiteXConnection": "Server=AASHISH-PC;Database=LiteXDB;user id=sa;password=PASSWORD;Trusted_Connection=True MultipleActiveResultSets=true;"
+}
+}
 ```
 
 ##### 2.2 : Configure Startup Class
 ```cs
-
+// No configuration required
 ```
 
 ### Step 3 : Use in Controller or Business layer :memo:
 
 ```cs
+    /// <summary>
+    /// Country controller
+    /// </summary>
+    [Route("api/[controller]")]
+    public class CountryController : Controller
+    {
+        #region Fields
 
+        public readonly string _connectionString;
+        private readonly IDbHelper _dbHelper;
+
+        #endregion
+
+        #region Ctor
+
+        /// <summary>
+        /// Ctor
+        /// </summary>
+        public CountryController(IConfiguration configuration)
+        {
+            _connectionString = configuration.GetConnectionString("LiteXConnection");
+            _dbHelper = new SqlHelper(_connectionString);
+            //_dbHelper = new MySqlHelper(_connectionString);
+            //_dbHelper = new NpgSqlHelper(_connectionString);
+            //_dbHelper = new MariaDBHelper(_connectionString);
+            //_dbHelper = new OracleHelper(_connectionString);
+        }
+
+        #endregion
+
+        #region Methods
+
+        [HttpGet]
+        [Route("get-all")]
+        public IActionResult GetAll(bool? isActive)
+        {
+            var paramResultOut = DbHelper.CreateOutParameter("@Result", SqlDbType.NVarChar, 100);
+            var paramIsActive = DbHelper.CreateParameter("@IsActive", isActive);
+
+
+            var spName = "GetCountries";
+            //var countries = _dbHelper.ExecuteReder(spName, CommandType.StoredProcedure, r => r.ParseCountryList(), paramIsActive);
+            var dataReader = _dbHelper.ExecuteReder(spName, paramIsActive, paramResultOut);
+
+            //// raw sql commnad
+            //var cmdText = "SELECT * FROM Country";
+            //var dataReader = _dbHelper.ExecuteReder(cmdText, CommandType.Text, paramIsActive);
+
+            var countries = dataReader.ParseCountryList();
+
+            // way 3
+            //var countries = _dbHelper.ExecuteReder(cmdText, CommandType.Text, r => r.TranslateAsCountry(), paramIsActive);
+
+            var resultOut = paramResultOut.Value;
+
+            if (countries == null || countries.Count == 0)
+                return NotFound("No record found");
+
+            return Ok(countries);
+        }
+
+
+        [HttpGet]
+        [Route("get-by-id/{id}")]
+        public IActionResult GetById(int id)
+        {
+            var paramResultOut = DbHelper.CreateOutParameter("@Result", SqlDbType.NVarChar, 100);
+            var paramId = DbHelper.CreateParameter("@Id", id);
+
+            var spName = "GetCountryById";
+            //var country = _dbHelper.ExecuteReder(spName, r => r.ParseCountry(), paramId);
+            var dataReader = _dbHelper.ExecuteReder(spName, paramId, paramResultOut);
+
+            //if (country == null)
+            //    return NotFound("No record found");
+
+            //return Ok(country);
+            return Ok();
+        }
+
+
+        [HttpPost]
+        [Route("add")]
+        public IActionResult Add(Country model)
+        {
+            var paramResultOut = DbHelper.CreateOutParameter("@Result", SqlDbType.NVarChar, 100);
+
+            var dbParams = new DbParameter[] 
+            {
+                DbHelper.CreateParameter("Name", model.Name),
+                DbHelper.CreateParameter("TwoLetterIsoCode", model.TwoLetterIsoCode),
+                DbHelper.CreateParameter("ThreeLetterIsoCode", model.ThreeLetterIsoCode),
+                DbHelper.CreateParameter("NumericIsoCode", model.NumericIsoCode),
+                DbHelper.CreateParameter("IsActive", model.IsActive),
+                DbHelper.CreateParameter("DisplayOrder", model.DisplayOrder),
+                paramResultOut
+            };
+
+
+            var spName = "AddCountry";
+            var result = _dbHelper.ExecuteScalar(spName, dbParams);
+            
+            var resultOut = paramResultOut.Value;
+
+            //if(result > 0)
+            //    return Ok(result);
+
+            return Ok();
+        }
+
+
+        [HttpPut]
+        [Route("update")]
+        public IActionResult Update(Country model)
+        {
+            var spName = "UpdateCountry";
+            var paramResultOut = DbHelper.CreateOutParameter("@Result", SqlDbType.NVarChar, 100);
+
+            var dbParams = new DbParameter[]
+            {
+                DbHelper.CreateParameter("Id", model.Id),
+                DbHelper.CreateParameter("Name", model.Name),
+                DbHelper.CreateParameter("TwoLetterIsoCode", model.TwoLetterIsoCode),
+                DbHelper.CreateParameter("ThreeLetterIsoCode", model.ThreeLetterIsoCode),
+                DbHelper.CreateParameter("NumericIsoCode", model.NumericIsoCode),
+                DbHelper.CreateParameter("IsActive", model.IsActive),
+                DbHelper.CreateParameter("DisplayOrder", model.DisplayOrder),
+                paramResultOut
+            };
+
+
+            var result = _dbHelper.ExecuteScalar(spName, dbParams);
+
+            var resultOut = paramResultOut.Value;
+
+            return Ok(result);
+        }
+
+
+        [HttpDelete]
+        [Route("remove/{id}")]
+        public IActionResult Remove(int id)
+        {
+            var spName = "DeleteCountry";
+            var paramResultOut = DbHelper.CreateOutParameter("@Result", SqlDbType.NVarChar, 100);
+            var paramId = DbHelper.CreateParameter("Id", id);
+            var resultCount = _dbHelper.ExecuteNonQuery(spName, paramId, paramResultOut);
+
+            if(resultCount  > 0)
+                return Ok(resultCount);
+
+            return StatusCode(500, "Error");
+        }
+
+
+        [HttpGet]
+        [Route("get-country-and-states")]
+        public IActionResult GetCountryAndStates()
+        {
+            var spName = "GetCountriesAndStates";
+            var paramResultOut = DbHelper.CreateOutParameter("@Result", SqlDbType.NVarChar, 100);
+            var ds = _dbHelper.GetDataSet(spName, paramResultOut);
+
+            var countries = new List<Country>();
+            var states = new List<StateProvince>();
+
+            return Ok();
+        }
+
+        #endregion
+
+        #region Utilities
+
+        #endregion
+    }
 ```
 
 
@@ -61,6 +247,7 @@ PM> Install-Package LiteX.DBStorage
 
 - [x] ExecuteNonQuery
 - [x] ExecuteScalar
+- [x] GetDataTable
 - [x] GetDataSet
 - [x] ExecuteReder
 - [x] CreateParameter
@@ -69,6 +256,8 @@ PM> Install-Package LiteX.DBStorage
 #### Coming soon
 - DbProviderFactory
 - Ping
+- OUT parameter support in Stored Procedure
+- Typesafe result
 
 
 ---
