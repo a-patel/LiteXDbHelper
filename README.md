@@ -9,9 +9,9 @@ It is just written for the purpose to bring a new level of ease to the developer
 ## Database Providers :books:
 - [SqlServer](docs/SqlServer.md)
 - [MySql](docs/MySql.md)
-- [PostgreSql](docs/PostgreSql.md) - Coming soon
-- [MariaDB](docs/MariaDB.md) - Coming soon
-- [Oracle](docs/Oracle.md) - Coming soon
+- [PostgreSql](docs/PostgreSql.md)
+- [MariaDB](docs/MariaDB.md)
+- [Oracle](docs/Oracle.md)
 
 
 ## Features :pager:
