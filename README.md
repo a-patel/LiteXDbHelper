@@ -843,7 +843,9 @@ public class CountryController : Controller
 - DbProviderFactory
 - OUT parameter support in Stored Procedure
 - Ping
-- Many more
+- .NET Standard 2.1 support
+- .NET 5.0 support
+
 
 
 ---
