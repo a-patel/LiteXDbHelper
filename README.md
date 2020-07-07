@@ -1,29 +1,42 @@
 # LiteXDbHelper
+
 > LiteXDbHelper is simple and tiny yet powerful and very high-performance library to working with ADO.NET for different database providers in C#.
-This library contains useful database utilitity classes, functions and extension methods.
+
+
+
+This library contains useful database utility classes, functions and extension methods.
 ADO.NET wrapper specifically develop to help make life easy working with relational databases like SQLServer, MySql, PostgreSql, MariaDB, Oracle and stored procedures for .NET and .NET Core applications.
 This is a tiny library helps write less code, to execute queries and stored procedures against SQL Server as like any normal CLR method.
 It is just written for the purpose to bring a new level of ease to the developers who deal with ADO.NET for data access.
 
 
+
+
+
 ## Database Providers :books:
-- [SqlServer](docs/SqlServer.md)
-- [MySql](docs/MySql.md)
-- [PostgreSql](docs/PostgreSql.md)
-- [MariaDB](docs/MariaDB.md)
-- [Oracle](docs/Oracle.md)
+
+- [SqlServer](docs/SqlServer.md) [![](https://img.shields.io/nuget/dt/LiteX.DbHelper.SqlServer.svg)](https://www.nuget.org/packages/LiteX.DbHelper.SqlServer/) [![](https://img.shields.io/nuget/v/LiteX.DbHelper.SqlServer.svg)](https://www.nuget.org/packages/LiteX.DbHelper.SqlServer/)
+- [MySql](docs/MySql.md) [![](https://img.shields.io/nuget/dt/LiteX.DbHelper.MySql.svg)](https://www.nuget.org/packages/LiteX.DbHelper.MySql/) [![](https://img.shields.io/nuget/v/LiteX.DbHelper.MySql.svg)](https://www.nuget.org/packages/LiteX.DbHelper.MySql/)
+- [PostgreSql](docs/PostgreSql.md) [![](https://img.shields.io/nuget/dt/LiteX.DbHelper.PostgreSql.svg)](https://www.nuget.org/packages/LiteX.DbHelper.PostgreSql/) [![](https://img.shields.io/nuget/v/LiteX.DbHelper.PostgreSql.svg)](https://www.nuget.org/packages/LiteX.DbHelper.PostgreSql/)
+- [MariaDB](docs/MariaDB.md) [![](https://img.shields.io/nuget/dt/LiteX.DbHelper.MariaDB.svg)](https://www.nuget.org/packages/LiteX.DbHelper.MariaDB/) [![](https://img.shields.io/nuget/v/LiteX.DbHelper.MariaDB.svg)](https://www.nuget.org/packages/LiteX.DbHelper.MariaDB/)
+- [Oracle](docs/Oracle.md) [![](https://img.shields.io/nuget/dt/LiteX.DbHelper.Oracle.svg)](https://www.nuget.org/packages/LiteX.DbHelper.Oracle/) [![](https://img.shields.io/nuget/v/LiteX.DbHelper.Oracle.svg)](https://www.nuget.org/packages/LiteX.DbHelper.Oracle/)
+
 
 
 ## Features :pager:
+
 #### Basic features
+
 - ExecuteNonQuery
 - ExecuteScalar
 - GetDataTable
 - GetDataSet
-- ExecuteReder
+- ExecuteReader
 - CreateParameters (for each providers)
 
+
 #### Advanced features
+
 - ExecuteScalar<>
 - GetSingle<T>
 - GetList<T>
@@ -31,7 +44,8 @@ It is just written for the purpose to bring a new level of ease to the developer
 - GetDictionary<TKey, TValue>
 
 
-### Instantiate the DBHelper:
+
+### Instantiate the DBHelper
 
 ```cs
 using DBHelpers;
@@ -41,7 +55,8 @@ IDBHelper dbHelper = new SqlHelper("MyCN");
 // use different provider class based on your database.
 ```
 
-### Basic ADO.NET methods:
+### Basic ADO.NET methods
+
 ```cs
 // Create parameters
 var paramResultOut = DbHelper.CreateOutParameter("@Result", SqlDbType.NVarChar, 100);
@@ -83,6 +98,7 @@ var dataSet = _dbHelper.GetDataSet("GetCountriesAndStates", paramIsActive, param
 ```
 
 ### Scalar methods: (Coming soon)
+
 ```cs
 // returning a object type scalar value 
 var name = _dbHelper.ExecuteScalar("SELECT Name FROM COUNTRY");
@@ -111,6 +127,7 @@ var valueNullableInt = _dbHelper.ExecuteScalar<int?>("SELECT CAST(NULL AS int)",
 ```
 
 ### Advanced feature (Coming soon)
+
 ADO.NET is not hard to use, but as any low level component it requires a lot of plumbing. It requires you to explicitly open connections and remember to close them. It requires you to convert values and handle DBNulls. As you work with it, it becomes clear that many things could be automated. This library is basically a lot of overloads that do most of this plumbing and let you concentrate on what you need to do. It returns storng type values.
 
 Once instantiated, DBHelper supports executing queries directly to the database and returning useful types in a single command. For example:
@@ -147,7 +164,9 @@ var countries = _dbHelper.GetList<Country>("GetCountries", paramId, paramResultO
 var countries = _dbHelper.GetList<Country>("SELECT * FROM Country WHERE IsActive = @IsActive", CommandType.Text, paramIsActive);
 ```
 
+
 #### Automatic Type Conversion (Coming soon)
+
 ---
 When loading data from the database, values can be null/DBNull or can be of a slightly different type. DBHelpers adds some extension methods to DbDataReader, so you can safely expect certain types.
 
@@ -160,6 +179,7 @@ var list = _dbHelper.GetList("SELECT Id, Name, NumericIsoCode FROM Country", cmd
     IsoCode = r.Get<int?>("NumericIsoCode")
 });
 ```
+
 
 
 ## Basic Usage :page_facing_up:
@@ -178,11 +198,13 @@ PM> Install-Package LiteX.DbHelper.Oracle
 ```
 
 
-### Step 2 : Configuration 🔨 
+### Step 2 : Configuration 🔨
+
 > Different types of database provider have their own way to config.
 > Here are samples that show you how to config.
 
-##### 2.1 : AppSettings 
+##### 2.1 : AppSettings
+
 ```js
 {
   "ConnectionStrings": {
@@ -192,6 +214,7 @@ PM> Install-Package LiteX.DbHelper.Oracle
 ```
 
 ##### 2.2 : Configure Startup Class
+
 ```cs
 // No configuration required
 ```
@@ -836,6 +859,7 @@ public class CountryController : Controller
 
 
 #### Coming soon
+
 - Typesafe result
 - Async support
 - Pagination at DB server side
@@ -848,19 +872,27 @@ public class CountryController : Controller
 
 
 
+
+
 ---
 
 
 
+
+
 ## Give a Star! :star:
+
 Feel free to request an issue on github if you find bugs or request a new feature. Your valuable feedback is much appreciated to better improve this project. If you find this useful, please give it a star to show your support for this project.
 
 
+
 ## Support :telephone:
+
 > Reach out to me at one of the following places!
 
 - Email :envelope: at <a href="mailto:toaashishpatel@gmail.com" target="_blank">`toaashishpatel@gmail.com`</a>
 - NuGet :package: at <a href="https://www.nuget.org/profiles/iamaashishpatel" target="_blank">`@iamaashishpatel`</a>
+
 
 
 ## Author :boy:
@@ -872,17 +904,20 @@ Feel free to request an issue on github if you find bugs or request a new featur
 
 | Linkedin | Website | Medium | NuGet | GitHub | Microsoft | Facebook | Twitter | Instagram | Tumblr |
 |----------|----------|----------|----------|----------|----------|----------|----------|----------|----------|
-| [![linkedin](https://img.icons8.com/ios-filled/96/000000/linkedin.png)](https://www.linkedin.com/in/iamaashishpatel) | [![website](https://img.icons8.com/wired/96/000000/domain.png)](https://aashishpatel.netlify.com/) | [![medium](https://img.icons8.com/ios-filled/96/000000/medium-monogram.png)](https://medium.com/@iamaashishpatel) | [![nuget](https://img.icons8.com/windows/96/000000/nuget.png)](https://nuget.org/profiles/iamaashishpatel) | [![github](https://img.icons8.com/ios-glyphs/96/000000/github.png)](https://github.com/a-patel) | [![microsoft](https://img.icons8.com/ios-filled/90/000000/microsoft.png)](https://docs.microsoft.com/en-us/users/iamaashishpatel) | [![facebook](https://img.icons8.com/ios-filled/90/000000/facebook.png)](https://www.facebook.com/aashish.mrcool) | [![twitter](https://img.icons8.com/ios-filled/96/000000/twitter.png)](https://twitter.com/aashish_mrcool) | [![instagram](https://img.icons8.com/ios-filled/90/000000/instagram-new.png)](https://www.instagram.com/iamaashishpatel/) | [![tumblr](https://img.icons8.com/ios-filled/96/000000/tumblr--v1.png)](https://iamaashishpatel.tumblr.com/) |
+| [![linkedin](https://img.icons8.com/ios-filled/96/000000/linkedin.png)](https://www.linkedin.com/in/iamaashishpatel) | [![website](https://img.icons8.com/wired/96/000000/domain.png)](https://aashishpatel.netlify.app/) | [![medium](https://img.icons8.com/ios-filled/96/000000/medium-monogram.png)](https://medium.com/@iamaashishpatel) | [![nuget](https://img.icons8.com/windows/96/000000/nuget.png)](https://nuget.org/profiles/iamaashishpatel) | [![github](https://img.icons8.com/ios-glyphs/96/000000/github.png)](https://github.com/a-patel) | [![microsoft](https://img.icons8.com/ios-filled/90/000000/microsoft.png)](https://docs.microsoft.com/en-us/users/iamaashishpatel) | [![facebook](https://img.icons8.com/ios-filled/90/000000/facebook.png)](https://www.facebook.com/aashish.mrcool) | [![twitter](https://img.icons8.com/ios-filled/96/000000/twitter.png)](https://twitter.com/aashish_mrcool) | [![instagram](https://img.icons8.com/ios-filled/90/000000/instagram-new.png)](https://www.instagram.com/iamaashishpatel/) | [![tumblr](https://img.icons8.com/ios-filled/96/000000/tumblr--v1.png)](https://iamaashishpatel.tumblr.com/) |
+
 
 
 ## Donate :dollar:
+
 If you find this project useful — or just feeling generous, consider buying me a beer or a coffee. Cheers! :beers: :coffee:
+
 | PayPal | BMC | Patreon |
 | ------------- | ------------- | ------------- |
 | [![PayPal](https://www.paypalobjects.com/webstatic/en_US/btn/btn_donate_pp_142x27.png)](https://www.paypal.me/iamaashishpatel) | [![Buy Me A Coffee](https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png)](https://www.buymeacoffee.com/iamaashishpatel) | [![Patreon](https://c5.patreon.com/external/logo/become_a_patron_button.png)](https://www.patreon.com/iamaashishpatel) |
 
 
+
 ## License :lock:
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details
-
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
